@@ -29,3 +29,7 @@ Temporary Items
 # 인텔리제이
 .gradle
 .idea
+
+# exclude
+build
+out

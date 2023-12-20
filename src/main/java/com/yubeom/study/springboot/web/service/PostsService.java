@@ -2,12 +2,16 @@ package com.yubeom.study.springboot.web.service;
 
 import com.yubeom.study.springboot.domain.posts.Posts;
 import com.yubeom.study.springboot.domain.posts.PostsRepository;
+import com.yubeom.study.springboot.web.dto.PostsListResponseDto;
 import com.yubeom.study.springboot.web.dto.PostsResponseDto;
 import com.yubeom.study.springboot.web.dto.PostsSaveRequestDto;
 import com.yubeom.study.springboot.web.dto.PostsUpdateRequestDto;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,6 +41,14 @@ public class PostsService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id = " + id));
 
         return new PostsResponseDto(entity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostsListResponseDto> findAllDesc(){
+        return repository.findAllDesc().stream()
+                .map(PostsListResponseDto::new)
+                .collect(Collectors.toList());
+
     }
     
 }

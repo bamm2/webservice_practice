@@ -9,8 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest // h2 데이터 베이스를 자동으로 실행해주는 기능도 존재
+@Slf4j
 public class PostsRepositoryTest {
 
     @Autowired
@@ -57,6 +63,28 @@ public class PostsRepositoryTest {
         assertThat(savedPost.getAuthor()).isEqualTo(post.getAuthor());
     }
 
+    @Test
+    public void BaseTimeEntity_등록(){
+        //given
+        LocalDateTime now = LocalDateTime.of(2023, 12, 20, 0, 0, 0);
+        repository.save(Posts.builder()
+                .title("제목")
+                .content("내용")
+                .author("작성자")
+                .build());
+
+        //when
+        List<Posts> posts = repository.findAll();
+
+        //then
+        Posts post = posts.get(0);
+
+        log.info("createDate={}, modifiedDate={}",post.getCreatedDate(),post.getModifiedDate());
+
+        assertThat(post.getCreatedDate()).isAfter(now);
+        assertThat(post.getModifiedDate()).isAfter(now);
+
+    }
 
 
 

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.yubeom.study.springboot.domain.posts.Posts;
 import com.yubeom.study.springboot.domain.posts.PostsRepository;
+import com.yubeom.study.springboot.web.dto.PostsResponseDto;
 import com.yubeom.study.springboot.web.dto.PostsSaveRequestDto;
 import com.yubeom.study.springboot.web.dto.PostsUpdateRequestDto;
 
@@ -100,6 +101,49 @@ public class PostsApiControllerTest {
         Posts updatedPosts = repository.findAll().get(0);
         assertThat(updatedPosts.getTitle()).isEqualTo(updateTitle);
         assertThat(updatedPosts.getContent()).isEqualTo(updateContent);
+    }
+
+    @Test
+    public void findById() {
+        //given
+        Posts post = Posts.builder()
+                .author(AUTHOR)
+                .title(TITLE)
+                .content(CONTENT)
+                .build();
+
+        repository.save(post);
+
+        String url = "http://localhost:" + port + "/api/v1/posts/" + post.getId();
+
+        //when
+        ResponseEntity<PostsResponseDto> responseDto = restTemplate.getForEntity(url, PostsResponseDto.class, post.getId());
+
+        //then
+        assertThat(responseDto.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseDto.getBody().getAuthor()).isEqualTo(AUTHOR);
+        assertThat(responseDto.getBody().getTitle()).isEqualTo(TITLE);
+    }
+
+    @Test
+    public void delete() {
+        //given
+        Posts post = Posts.builder()
+                .author(AUTHOR)
+                .title(TITLE)
+                .content(CONTENT)
+                .build();
+
+        repository.save(post);
+
+        String url = "http://localhost:" + port + "/api/v1/posts/" + post.getId();
+
+        //when
+        ResponseEntity<Long> response = restTemplate.exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, Long.class);
+
+        //then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(post.getId()); // 삭제된 id값 반환 일치 여부 확인
     }
 
 }

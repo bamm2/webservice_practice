@@ -41,4 +41,8 @@ public class Posts extends BaseTimeEntity {
         this.content = content;
     }
 
+    @Override
+    public String toString() {
+        return "{\"id\":" + id + ",\"title\":\"" + title + "\",\"content\":\"" + content + "\",\"author\":\"" + author + "\"}";
+    }
 }

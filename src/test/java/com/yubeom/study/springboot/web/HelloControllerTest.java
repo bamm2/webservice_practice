@@ -6,22 +6,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.yubeom.study.springboot.config.auth.SecurityConfig;
 import com.yubeom.study.springboot.web.controller.HelloController;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 @RunWith(SpringRunner.class) //  @Autowired, @MockBean 등만 AppCtx 로 로딩하는 역할을 수행.
-@WebMvcTest(controllers = HelloController.class)   // JUnit5에서는 RunWith 내장 , 컨트롤러 동작만 확인할 경우 사용하는 어노테이션
+@WebMvcTest(controllers = HelloController.class, // JUnit5에서는 RunWith 내장 , 컨트롤러 동작만 확인할 경우 사용하는 어노테이션
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)
+        })
 public class HelloControllerTest {
 
     @Autowired
     private MockMvc mvc; // 목 객체 , 웹 API 테스트용
 
+    @WithMockUser(roles = "USER")
     @Test
     public void hello_리턴() throws Exception {
         // given
@@ -33,7 +41,8 @@ public class HelloControllerTest {
                 .andExpect(content().string(hello));
 
     }
-
+    
+    @WithMockUser(roles = "USER")
     @Test
     public void helloResponseDto_리턴() throws Exception {
         //given

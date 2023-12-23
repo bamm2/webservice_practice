@@ -9,7 +9,6 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
-
 }
 
 apply plugin: 'java'
@@ -27,7 +26,8 @@ repositories {
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.projectlombok:lombok')
+    compile('org.projectlombok:lombok:1.18.26')
+    annotationProcessor('org.projectlombok:lombok:1.18.26')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-mustache')
     compile('com.h2database:h2')
@@ -35,6 +35,10 @@ dependencies {
     compile('org.springframework.session:spring-session-jdbc')
     compile("org.mariadb.jdbc:mariadb-java-client")
 
+    //JUnit4 추가
+    testCompile("org.junit.vintage:junit-vintage-engine") {
+        exclude group: "org.hamcrest", module: "hamcrest-core"
+    }
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile("org.springframework.security:spring-security-test")
 }

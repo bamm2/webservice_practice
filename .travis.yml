@@ -20,9 +20,9 @@ notifications:
       - xxknu88@naver.com
 
 before_deploy:
-  - zip -r study-springboot2-webservice
+  - zip -r webservice_practice
   - mkdir -p deploy
-  - mv study-springboot2-webservice.zip deploy/study-springboot2-webservice.zip
+  - mv webservice_practice.zip deploy/webservice_practice.zip
 
 deploy:
   - provider: s3
